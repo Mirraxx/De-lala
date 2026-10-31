@@ -1,16 +1,13 @@
 'use strict';
 
 /* ================= configuración ================= */
-/* Mismo proyecto de Firebase que la app de finanzas. Los valores son públicos por diseño: la seguridad la dan
-   las reglas de Firestore (firestore.rules) y, sobre todo, el cifrado del contenido con la contraseña del regalo. */
-const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyD1d9LRDe_-WTgu4Swbs152auer33gmSC4",
-  authDomain: "personal-app-cf4fe.firebaseapp.com",
-  projectId: "personal-app-cf4fe",
-  storageBucket: "personal-app-cf4fe.firebasestorage.app",
-  messagingSenderId: "795055974870",
-  appId: "1:795055974870:web:d16dca1e401866825e1c77"
-};
+/* Configuración del proyecto de Firebase de ESTE regalo (un proyecto propio, aparte de cualquier otra app).
+   Se copia de Firebase: Configuración del proyecto > Tus apps > app web > "Configuración del SDK". Los valores son
+   públicos por diseño: la seguridad la dan las reglas de Firestore (firestore.rules) y, sobre todo, el cifrado del
+   contenido con la contraseña del regalo. Mientras sea null la página avisa que falta conectarla (?demo sí funciona).
+   Forma esperada:
+     { apiKey: "...", authDomain: "...", projectId: "...", storageBucket: "...", messagingSenderId: "...", appId: "..." } */
+const FIREBASE_CONFIG = null;
 const FB_VER = '10.12.2';
 const ADMIN_EMAIL = 'israllaire@gmail.com';   // debe coincidir con firestore.rules
 const KDF_ITER = 300000;                      // vueltas de PBKDF2: frenan a quien intente adivinar la contraseña
@@ -917,6 +914,11 @@ async function boot() {
   ambient.init();
   creatorLine();
   if (DEMO) $('#demo-badge').hidden = false;
+  if (!DEMO && !FIREBASE_CONFIG) {
+    $('#gate-form').hidden = true; $('.creator-line').hidden = true;
+    gateState('<b>Falta conectar Firebase</b>Pega la configuración de tu proyecto en <code>FIREBASE_CONFIG</code>, dentro de <code>app.js</code>. Mientras tanto puedes ensayar el diseño agregando <code>?demo</code> a la dirección.');
+    return;
+  }
   backend.onAuth(syncAdminUI);
   try { S.cfg = await backend.getConfig(); }
   catch (e) { showGateError(e); return; }

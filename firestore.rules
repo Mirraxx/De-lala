@@ -1,0 +1,39 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Creador: el único que puede escribir. Si cambias el correo, cámbialo también en app.js (ADMIN_EMAIL).
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email.lower() == 'israllaire@gmail.com';
+    }
+
+    // Todo el contenido se cifra en el navegador con la contraseña del regalo: cualquiera puede leer los documentos,
+    // pero solo se entienden con esa contraseña.
+    match /gift/{doc} {
+      allow read: if true;
+      allow create, update: if isAdmin() && doc == 'config'
+        && request.resource.data.keys().hasOnly(['v', 'salt', 'iter', 'hint', 'hint2', 'wiv', 'wct', 'iv', 'ct', 'updatedAt'])
+        && request.resource.data.ct is string && request.resource.data.ct.size() < 900000
+        && request.resource.data.hint is string && request.resource.data.hint.size() < 300
+        && request.resource.data.hint2 is string && request.resource.data.hint2.size() < 300;
+      allow delete: if isAdmin();
+    }
+
+    // Una foto por documento (límite de Firestore: 1 MB).
+    match /giftPhotos/{id} {
+      allow read: if true;
+      allow create, update: if isAdmin()
+        && request.resource.data.keys().hasOnly(['iv', 'ct', 'updatedAt'])
+        && request.resource.data.ct is string && request.resource.data.ct.size() < 900000;
+      allow delete: if isAdmin();
+    }
+
+    // Aperturas: quien abre la carta deja una marca de hora; solo el creador las lee.
+    match /giftVisits/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['t']) && request.resource.data.t is number;
+      allow read, delete: if isAdmin();
+    }
+  }
+}
