@@ -27,6 +27,7 @@
   --bg-counter: linear-gradient(180deg, var(--sky-2), var(--sky));
   --bg-gallery: linear-gradient(180deg, var(--blush), var(--blush-2));
   --bg-timeline: linear-gradient(180deg, var(--sage-2), var(--sage));
+  --bg-videos: linear-gradient(180deg, var(--blush-2), var(--sky-2));
   --bg-reasons: linear-gradient(180deg, var(--wine), #45122A);
   --bg-music: linear-gradient(180deg, var(--sky-2), var(--bg));
   --bg-finale: linear-gradient(180deg, var(--bg), var(--blush));
@@ -48,6 +49,7 @@
   --bg-counter: linear-gradient(180deg, #2C0B1B, #3A1830);
   --bg-gallery: linear-gradient(180deg, #3A1830, #2C0B1B);
   --bg-timeline: linear-gradient(180deg, #2C0B1B, #22301F);
+  --bg-videos: linear-gradient(180deg, #2C0B1B, #3B1127);
   --bg-reasons: linear-gradient(180deg, #22301F, #3B1127);
   --bg-music: linear-gradient(180deg, #3B1127, #2C0B1B);
   --bg-finale: linear-gradient(180deg, #2C0B1B, #4A1530);
@@ -66,6 +68,7 @@
   --bg-counter: linear-gradient(180deg, var(--sky-2), var(--blush-2));
   --bg-gallery: linear-gradient(180deg, var(--blush-2), var(--sky-2));
   --bg-timeline: linear-gradient(180deg, var(--sky-2), var(--sage-2));
+  --bg-videos: linear-gradient(180deg, var(--sky-2), var(--blush-2));
   --bg-music: linear-gradient(180deg, var(--sage-2), var(--sky-2));
   --bg-finale: linear-gradient(180deg, var(--sky-2), var(--blush));
   --accent-num: var(--sky-ink);
@@ -298,6 +301,26 @@ input[type="checkbox"] { width: auto; }
 .lightbox img { max-width: 100%; max-height: 74svh; border-radius: 4px; box-shadow: 0 20px 60px rgba(0, 0, 0, .5); }
 .lightbox figcaption { color: #FFE9EE; font-size: 1.7rem; margin-top: .8rem; min-height: 2rem; }
 .lb-x { position: absolute; top: max(.8rem, env(safe-area-inset-top)); right: .9rem; width: 44px; height: 44px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, .14); color: #fff; font-size: 1.2rem; cursor: pointer; }
+
+/* --- Videos --- */
+.s-videos { background: var(--bg-videos); color: var(--ink-light); }
+.videos { margin-top: 2.2rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 1.6rem; }
+.vcard { margin: 0; flex: 1 1 300px; max-width: 460px; }
+.vplay { position: relative; display: block; width: 100%; padding: 0; border: 0; cursor: pointer; overflow: hidden; border-radius: 22px; background: var(--blush); box-shadow: 0 2px 4px rgba(94, 27, 51, .12), 0 20px 34px -14px rgba(94, 27, 51, .45); }
+.vposter { position: absolute; inset: 0; background: linear-gradient(110deg, var(--blush) 30%, var(--blush-2) 50%, var(--blush) 70%) 0 0 / 200% 100%; animation: shimmer 1.600s infinite; }
+.vposter.ready { animation: none; background: #1d0a14; }
+.vposter img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity .6s; }
+.vposter.ready img { opacity: 1; }
+.vbtn { position: absolute; left: 50%; top: 50%; width: 68px; height: 68px; margin: -34px 0 0 -34px; border-radius: 50%; display: grid; place-items: center; background: rgba(94, 27, 51, .84); color: #FFF1F3; box-shadow: 0 10px 24px rgba(0, 0, 0, .35); transition: transform .25s; }
+.vbtn svg { width: 30px; height: 30px; margin-left: 4px; }
+.vplay:hover .vbtn { transform: scale(1.1); }
+.vplay.loading { cursor: progress; }
+.vplay.loading .vbtn { animation: beat 1.200s ease-in-out infinite; }
+.vmeta { position: absolute; right: .7rem; bottom: .65rem; padding: .22rem .65rem; border-radius: 999px; background: rgba(36, 8, 20, .66); color: #fff; font-size: .78rem; font-weight: 700; }
+.vcard video { display: block; width: 100%; max-height: 80svh; border-radius: 22px; background: #000; box-shadow: 0 20px 34px -14px rgba(94, 27, 51, .5); }
+.vcard figcaption { font-family: 'Caveat', cursive; font-size: 1.5rem; line-height: 1.2; text-align: center; margin-top: .8rem; color: var(--wine-2); font-weight: 600; }
+[data-theme="atardecer"] .vcard figcaption { color: var(--rose); }
+.vinfo { display: block; color: var(--muted); font-size: .8rem; margin-top: .25rem; }
 
 /* --- Línea del tiempo --- */
 .s-timeline { background: var(--bg-timeline); color: var(--ink-light); }
