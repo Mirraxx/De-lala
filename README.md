@@ -15,6 +15,8 @@ Tiene tres temas de color: **Jardín** (rosa, celeste y salvia sobre crema, con 
 
 ## Activarla
 
+Son cinco pasos, una sola vez. Todo se hace desde el navegador y no cuesta nada (Firebase en el plan gratuito, sin tarjeta).
+
 ### 1. Publicar el sitio (GitHub Pages)
 
 1. En este repositorio, abre **Settings > Pages**.
@@ -23,36 +25,55 @@ Tiene tres temas de color: **Jardín** (rosa, celeste y salvia sobre crema, con 
 
 Si el repositorio es privado, GitHub Pages solo está disponible con ciertos planes de pago. En ese caso la opción más simple es volver el repositorio público: aquí no hay secretos, porque el contenido de la carta se guarda cifrado en Firebase y no en el repositorio.
 
-### 2. Publicar las reglas de Firebase
+### 2. Crear el proyecto de Firebase (propio de este regalo)
 
-Esta página usa el **mismo proyecto de Firebase que la app de finanzas** (`personal-app-cf4fe`). Las reglas de ese proyecto viven en el repositorio **Personal_App**, en `firestore.rules`, y ahí ya están las del regalo (colecciones `gift`, `giftPhotos` y `giftVisits`).
+1. Entra a [console.firebase.google.com](https://console.firebase.google.com) con tu cuenta de Google y toca **Agregar proyecto**.
+2. Ponle un nombre (por ejemplo `de-lala`) y continúa. Puedes **desactivar Google Analytics**. Toca **Crear proyecto**.
 
-> **No crees ni pegues aquí un archivo de reglas distinto.** Firestore tiene un único conjunto de reglas por base de datos: pegar otro lo reemplaza completo y rompería la app de finanzas o este regalo.
+### 3. Activar el inicio de sesión de Google
 
-1. En console.firebase.google.com abre el proyecto **personal-app-cf4fe**.
-2. Entra a **Firestore Database > Reglas**.
-3. Copia el contenido de `firestore.rules` desde el repositorio Personal_App (rama `main`, botón **Raw**), pégalo reemplazando todo y toca **Publicar**.
+1. En el menú izquierdo abre **Authentication** y toca **Comenzar**.
+2. En la pestaña **Sign-in method** elige **Google**, actívalo, elige tu correo como correo de asistencia y **Guarda**.
+3. Ve a **Settings > Authorized domains** (Configuración > Dominios autorizados), toca **Agregar dominio** y escribe `mirraxx.github.io`. `localhost` ya viene incluido.
 
-Sin este paso la página dice «No se pudo abrir el sobre».
+### 4. Crear la base de datos y publicar las reglas
 
-### 3. Inicio de sesión
+1. En el menú izquierdo abre **Firestore Database** y toca **Crear base de datos**.
+2. Elige **modo producción** y una región cercana (por ejemplo `southamerica-east1`). La región no se puede cambiar después. Toca **Habilitar**.
+3. Abre la pestaña **Reglas**, borra lo que hay y pega **todo** el contenido del archivo [`firestore.rules`](firestore.rules) de este repositorio (botón **Raw** > Ctrl+A > copiar). Toca **Publicar**.
 
-Si la app de finanzas ya inicia sesión con Google, no hay nada más que hacer: ambos sitios comparten el dominio `mirraxx.github.io`. Si no, revisa en Firebase, **Authentication**:
+Sin las reglas, la página dice «No se pudo abrir el sobre».
 
-- *Sign-in method*: **Google** habilitado.
-- *Settings > Authorized domains*: debe estar `mirraxx.github.io`.
+### 5. Conectar la página con tu proyecto
 
-### 4. Preparar la carta
+1. En Firebase, toca el engranaje junto a *Descripción general del proyecto* y abre **Configuración del proyecto**.
+2. Baja a **Tus apps** y toca el ícono web **`</>`**. Ponle un apodo, **no marques Firebase Hosting** y toca **Registrar app**.
+3. Aparece un bloque con `const firebaseConfig = { ... }`. Copia solo lo que va entre las llaves.
+4. En este repositorio abre `app.js`, toca el lápiz (**Edit**) y busca `const FIREBASE_CONFIG = null;`. Reemplaza `null` por el bloque, de modo que quede así, con tus valores:
+
+   ```js
+   const FIREBASE_CONFIG = {
+     apiKey: "...",
+     authDomain: "...",
+     projectId: "...",
+     storageBucket: "...",
+     messagingSenderId: "...",
+     appId: "..."
+   };
+   ```
+
+5. Toca **Commit changes**. Espera un minuto a que Pages se actualice.
+
+Estos valores son públicos por diseño: la seguridad la dan las reglas y el cifrado, no esconder la clave.
+
+## Preparar y entregar la carta
 
 1. Abre la dirección del sitio y toca **Modo creador** (enlace pequeño, abajo).
 2. Inicia sesión con la cuenta de administrador (`ADMIN_EMAIL` en `app.js`, que debe coincidir con `firestore.rules`).
 3. Toca **Preparar la carta** y completa nombres, fecha de inicio (revisa el año), contraseña y pista. Anota la contraseña en un lugar seguro.
 4. Personaliza con el lápiz flotante: General, Carta, Fotos, Historia, Razones, Música, Acceso y Compartir. Los cambios se ven en vivo, pero se publican al tocar **Guardar cambios**.
-
-### 5. Probarla y entregarla
-
-- Ábrela en una ventana de incógnito como si fueras la otra persona: prueba una contraseña mala, la segunda pista y la contraseña correcta.
-- En **Compartir** están el enlace y el código QR (puedes imprimirlo en una tarjeta con la pista). Ahí también está el respaldo y las últimas aperturas.
+5. Ábrela en una ventana de incógnito como si fueras la otra persona: prueba una contraseña mala, la segunda pista y la contraseña correcta. Revísala también en el teléfono.
+6. En **Compartir** están el enlace y el código QR (puedes imprimirlo en una tarjeta con la pista). Ahí también está el respaldo y las últimas aperturas.
 
 ## Seguridad y límites
 
@@ -68,12 +89,13 @@ Si la app de finanzas ya inicia sesión con Google, no hay nada más que hacer: 
 
 | Lo que ves | Qué hacer |
 |---|---|
-| «No se pudo abrir el sobre. Falta publicar las reglas» | Repite el paso 2. |
+| «Falta conectar Firebase» | Falta el paso 5: pegar la configuración en `app.js`. |
+| «No se pudo abrir el sobre. Falta publicar las reglas» | Repite el paso 4 (reglas). |
 | «Firebase rechazó la operación…» al guardar | Las reglas no están publicadas, o no entraste como administrador. |
-| «Este sitio no está autorizado en Firebase» | Agrega `mirraxx.github.io` en *Authorized domains*. |
+| «Este sitio no está autorizado en Firebase» | Agrega `mirraxx.github.io` en *Authorized domains* (paso 3). |
 | No aparece la ventana de Google | Permite las ventanas emergentes de ese sitio. |
 | «Esa cuenta no es la del creador» | Usa la cuenta de administrador. |
-| Error 404 | Falta el paso 1 o aún no pasan un par de minutos. |
+| Error 404 | Falta el paso 1, o aún no pasan un par de minutos. |
 
 ## Probar sin Firebase
 
