@@ -7,7 +7,15 @@
    contenido con la contraseña del regalo. Mientras sea null la página avisa que falta conectarla (?demo sí funciona).
    Forma esperada:
      { apiKey: "...", authDomain: "...", projectId: "...", storageBucket: "...", messagingSenderId: "...", appId: "..." } */
-const FIREBASE_CONFIG = null;
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyD1EiCdHJa4GNSgPrn_r--6-GCOct1R2wk",
+  authDomain: "de-lala.firebaseapp.com",
+  projectId: "de-lala",
+  storageBucket: "de-lala.firebasestorage.app",
+  messagingSenderId: "497894689885",
+  appId: "1:497894689885:web:ed9a2600ea86598d3351b4",
+  measurementId: "G-SV51MD7EF0"
+};
 const FB_VER = '10.12.2';
 const ADMIN_EMAIL = 'israllaire@gmail.com';   // debe coincidir con firestore.rules
 const KDF_ITER = 300000;                      // vueltas de PBKDF2: frenan a quien intente adivinar la contraseña
