@@ -9,7 +9,7 @@ Son tres archivos y una librería, sin proceso de build: `index.html`, `style.cs
 1. Un sobre rosa con sello. Se muestra la pista y se escribe la contraseña (si falla 3 veces, aparece una segunda pista opcional).
 2. El sobre se abre y la carta se escribe palabra por palabra.
 3. Contador en vivo desde la fecha de inicio, con cuenta regresiva al próximo mesiversario o aniversario.
-4. Galería de fotos con visor, línea del tiempo, "Cosas que amo de ti" (corazones que se dan vuelta), playlist de Spotify y mensaje final.
+4. Galería de fotos con visor, videos, línea del tiempo, "Cosas que amo de ti" (corazones que se dan vuelta), playlist de Spotify y mensaje final.
 
 Tiene tres temas de color: **Jardín** (rosa, celeste y salvia sobre crema, con burdeo para el texto), **Atardecer** (noche burdeo) y **Cielo** (más celeste).
 
@@ -71,7 +71,7 @@ Estos valores son públicos por diseño: la seguridad la dan las reglas y el cif
 1. Abre la dirección del sitio y toca **Modo creador** (enlace pequeño, abajo).
 2. Inicia sesión con la cuenta de administrador (`ADMIN_EMAIL` en `app.js`, que debe coincidir con `firestore.rules`).
 3. Toca **Preparar la carta** y completa nombres, fecha de inicio (revisa el año), contraseña y pista. Anota la contraseña en un lugar seguro.
-4. Personaliza con el lápiz flotante: General, Carta, Fotos, Historia, Razones, Música, Acceso y Compartir. Los cambios se ven en vivo, pero se publican al tocar **Guardar cambios**.
+4. Personaliza con el lápiz flotante: General, Carta, Fotos, Videos, Historia, Razones, Música, Acceso y Compartir. Los cambios se ven en vivo, pero se publican al tocar **Guardar cambios**.
 5. Ábrela en una ventana de incógnito como si fueras la otra persona: prueba una contraseña mala, la segunda pista y la contraseña correcta. Revísala también en el teléfono.
 6. En **Compartir** están el enlace y el código QR (puedes imprimirlo en una tarjeta con la pista). Ahí también está el respaldo y las últimas aperturas.
 
@@ -80,6 +80,7 @@ Estos valores son públicos por diseño: la seguridad la dan las reglas y el cif
 - **El contenido va cifrado.** Carta, textos y fotos se cifran en el navegador (AES-GCM) con una llave que solo se abre con la contraseña (PBKDF2, 300.000 vueltas). En Firestore queda texto ilegible; la pista es lo único que se guarda en claro. La contraseña no distingue mayúsculas ni tildes.
 - **Una contraseña débil se puede adivinar** probando combinaciones sin conexión. Usa una frase que solo ustedes sepan.
 - **Si olvidas la contraseña, el contenido no se recupera.** Descarga el respaldo (pestaña Compartir) y guárdalo en un lugar privado: va **sin cifrar**. En la puerta, el creador tiene **Olvidé la contraseña**, que borra todo para empezar de nuevo.
+- **Videos**: hasta 6, de 40 MB cada uno como máximo. Se parten en trozos cifrados de unos 600 KB, porque Firebase Storage exige tarjeta de crédito y Firestore (gratis) guarda como máximo 1 MB por documento. Mejor en **MP4 (H.264)** y cortos (1 o 2 minutos): los `.mov` de iPhone en HEVC pueden no reproducirse en Android o Windows. El video solo se descarga cuando la persona toca reproducir. Si el archivo pesa más, expórtalo en 720p o recórtalo. El respaldo **no** incluye los videos.
 - **Fotos**: hasta 40; se reducen a 1400 px y unos 400 KB, y cada una es un documento aparte (límite de 1 MB de Firestore).
 - **Spotify**: el reproductor incrustado toca canciones completas solo si la persona tiene sesión iniciada en Spotify en ese navegador; si no, suenan fragmentos de 30 segundos. La playlist debe ser pública.
 - **Aperturas**: al entrar con la contraseña se guarda la hora. La ves en *Compartir > Aperturas*; no se registra nada más.
